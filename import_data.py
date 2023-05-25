@@ -30,16 +30,17 @@ mydb.commit()
 #Read data from a csv file
 assasin_data = pd.read_csv('./serial_killers.csv', index_col=False, delimiter = ',')
 assasin_data = assasin_data.fillna('Null')
+max_length = 100
+assasin_data = assasin_data.rename(columns={'Years active': 'Years_active'})
+assasin_data['Years_active'] = assasin_data['Years_active'].str[:max_length]
 print(assasin_data.head(20))
 
 #Fill the table
-for i,row in assasin_data.iterrows():
+for i, row in assasin_data.iterrows():
     cursor = mydb.cursor()
-    #here %S means string values 
-    sql = "INSERT INTO Serial_Killers.assasins VALUES (%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO Serial_Killers.assasins (Name, Country, Years_active, Proven_victims, Possible_victims) VALUES (%s, %s, %s, %s, %s)"
     cursor.execute(sql, tuple(row))
-    print("Tabella inserita BETCH!!")
-    # the connection is not auto committed by default, so we must commit to save our changes
+    print("Row inserted")
     mydb.commit()
 
 #Check if the table has been filled
